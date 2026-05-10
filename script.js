@@ -47,14 +47,27 @@ function GameController() {
 
     const getCurrentPlayer = () => currentPlayer;
 
+    const winCondition = () => {
+        const currentBoard = board.getBoard().map(row => row.map(cell => cell.getValue()));
+        const currentMark = getCurrentPlayer().mark;
+
+        const winLines = [];
+        for (let r = 0; r < 3; r++) { winLines.push( [[r,0],[r,1],[r,2]] ) };
+        for (let c = 0; c < 3; c++) { winLines.push( [[0,c],[1,c],[2,c]] ) };
+        winLines.push( [[0,0],[1,1],[2,2]] );
+        winLines.push( [[0,2],[1,1],[2,0]] );
+
+        return winLines.some(line => line.every(([r,c]) => 
+            currentBoard[r][c] === currentMark));
+    };
+
     const playRound = (cell) => {
         board.putMark(cell, getCurrentPlayer().mark);
+        if (winCondition()) return;
         nextPlayer();
-    }
+    };
 
-    //win condition code goes here
-
-    return { getCurrentPlayer, playRound, getBoard: board.getBoard};
+    return { getCurrentPlayer, playRound, getBoard: board.getBoard, winCondition };
 }
 
 function ScreenController() {
@@ -68,7 +81,11 @@ function ScreenController() {
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer();
 
-        textDiv.textContent = `hello ${currentPlayer.name}, your urn`;
+        if (!game.winCondition()) {
+            textDiv.textContent = `hello ${currentPlayer.name}, your urn`;
+        } else {
+            textDiv.textContent = `${currentPlayer.name} won the game yipee, gg ez`;
+        }
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
@@ -86,6 +103,7 @@ function ScreenController() {
         const btn = e.target.closest('.cell');
         if (!btn) return;
         if (btn.textContent) return;
+        if (game.winCondition()) return;
 
         game.playRound({row: btn.dataset.row, col: btn.dataset.col});
         updateBoard();
