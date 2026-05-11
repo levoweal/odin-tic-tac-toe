@@ -28,3 +28,17 @@ html, body {
     gap: 20px;
     padding: 20px;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin-top: 60px;
+}
+
+.reset {
+    width: 100px;
+    height: 50px;
+}

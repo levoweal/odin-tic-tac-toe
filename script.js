@@ -10,8 +10,9 @@ function Gameboard() {
 
     const getBoard = () => board;
     const putMark = (cell, playerMark) => board[cell.row][cell.col].addMark(playerMark);
+    const boardReset = () => board.forEach(row => row.forEach(cell => cell.valueReset()));
 
-    return { getBoard, putMark };
+    return { getBoard, putMark, boardReset };
 }
 
 function Cell() {
@@ -19,8 +20,9 @@ function Cell() {
 
     const addMark = (playerMark) => value = playerMark;
     const getValue = () => value;
+    const valueReset = () => value = '';
 
-    return { addMark, getValue };
+    return { addMark, getValue, valueReset };
 }
 
 function GameController() {
@@ -61,19 +63,37 @@ function GameController() {
             currentBoard[r][c] === currentMark));
     };
 
+    const drawCondition = () => {
+        const currentBoard = board.getBoard().map(row => row.map(cell => cell.getValue()));
+        return currentBoard.every(row => row.every(cell => cell !== '')) && !winCondition();
+    }
+
     const playRound = (cell) => {
         board.putMark(cell, getCurrentPlayer().mark);
         if (winCondition()) return;
         nextPlayer();
     };
 
-    return { getCurrentPlayer, playRound, getBoard: board.getBoard, winCondition };
+    const gameReset = () => {
+        board.boardReset();
+        currentPlayer = players[0];
+    };
+
+    return { 
+        getCurrentPlayer, 
+        playRound, 
+        getBoard: board.getBoard, 
+        winCondition,
+        drawCondition,
+        gameReset 
+    };
 }
 
 function ScreenController() {
     const game = GameController();
     const textDiv = document.querySelector('.text');
     const boardDiv = document.querySelector('.board');
+    const resetBtn = document.querySelector('.reset');
 
     const updateBoard = () => {
         boardDiv.textContent = '';
@@ -81,10 +101,12 @@ function ScreenController() {
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer();
 
-        if (!game.winCondition()) {
-            textDiv.textContent = `hello ${currentPlayer.name}, your urn`;
-        } else {
+        if (game.winCondition()) {
             textDiv.textContent = `${currentPlayer.name} won the game yipee, gg ez`;
+        } else if (game.drawCondition()) {
+            textDiv.textContent = `game over, itsa drow, gg both loser`;
+        } else {
+            textDiv.textContent = `hello ${currentPlayer.name}, your urn`;
         }
 
         board.forEach((row, rowIndex) => {
@@ -104,10 +126,16 @@ function ScreenController() {
         if (!btn) return;
         if (btn.textContent) return;
         if (game.winCondition()) return;
+        if (game.drawCondition()) return;
 
         game.playRound({row: btn.dataset.row, col: btn.dataset.col});
         updateBoard();
     }
+
+    resetBtn.addEventListener('click', () => {
+        game.gameReset();
+        updateBoard();
+    })
 
     boardDiv.addEventListener('click', clickHandler);
     updateBoard();
