@@ -59,8 +59,12 @@ function GameController() {
         winLines.push( [[0,0],[1,1],[2,2]] );
         winLines.push( [[0,2],[1,1],[2,0]] );
 
-        return winLines.some(line => line.every(([r,c]) => 
-            currentBoard[r][c] === currentMark));
+        //return winLines.some(line => line.every(([r,c]) => currentBoard[r][c] === currentMark));
+
+        for (const line of winLines) {
+    		if (line.every(([r,c]) => currentBoard[r][c] === currentMark)) return line;
+  	    }
+        return null;
     };
 
     const drawCondition = () => {
@@ -95,14 +99,38 @@ function ScreenController() {
     const boardDiv = document.querySelector('.board');
     const resetBtn = document.querySelector('.reset');
 
+    const winLine = document.createElement('div');
+    winLine.className = 'win-line';
+    winLine.style.display = 'none';
+    boardDiv.appendChild(winLine);
+
+    const drawWinLine = (line) => {
+        const [[ar,ac],[br,bc],[cr,cc]] = line;
+        winLine.className = 'win-line';
+        winLine.style.display = '';
+
+        if (ar === br && br === cr) {
+            winLine.classList.add('win-line--row', `row-${ar + 1}`);
+        } else if (ac === bc && bc === cc) {
+            winLine.classList.add('win-line--col', `col-${ac + 1}`);
+        } else {
+            winLine.classList.add('win-line--diag', (ar === 0 && ac === 0) ? 'top-left' : 'top-right');
+        }
+    };
+
     const updateBoard = () => {
         boardDiv.textContent = '';
+        winLine.className = 'win-line';
+        winLine.style.display = 'none';
+        boardDiv.appendChild(winLine);
 
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer();
+        const winningLine = game.winCondition();
 
-        if (game.winCondition()) {
+        if (winningLine) {
             textDiv.textContent = `${currentPlayer.name} won the game yipee, gg ez`;
+            drawWinLine(winningLine);
         } else if (game.drawCondition()) {
             textDiv.textContent = `game over, itsa drow, gg both loser`;
         } else {
