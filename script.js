@@ -59,8 +59,6 @@ function GameController() {
         winLines.push( [[0,0],[1,1],[2,2]] );
         winLines.push( [[0,2],[1,1],[2,0]] );
 
-        //return winLines.some(line => line.every(([r,c]) => currentBoard[r][c] === currentMark));
-
         for (const line of winLines) {
     		if (line.every(([r,c]) => currentBoard[r][c] === currentMark)) return line;
   	    }
@@ -166,7 +164,8 @@ function ScreenController() {
     })
 
     boardDiv.addEventListener('click', clickHandler);
-    updateBoard();
+
+    //updateBoard();
 }
 
 ScreenController();

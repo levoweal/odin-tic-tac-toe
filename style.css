@@ -31,7 +31,8 @@ body {
 .board {
     --size: 400px;
     --gap: 20px;
-    --inner: calc(100% - 4 * var(--gap));
+    --inner: calc(var(--size) - (2 * var(--gap)));
+    --cell: calc((var(--inner) - (2 * var(--gap))) / 3);
 
     width: var(--size);
     height: var(--size);
@@ -54,21 +55,20 @@ body {
     pointer-events: none;
     z-index: 100;
     background: black;
-    border-radius: 4px;
     position: absolute;
 }
 
 .win-line--row {
-    left: calc(var(--gap) * 1.2);
-    right: calc(var(--gap) * 1.2);
-    height: 6px;
+    left: calc(var(--gap) * 1.8);
+    right: calc(var(--gap) * 1.8);
+    height: 3px;
     transform: translateY(-50%);
 }
 
 .win-line--col {
-    top: calc(var(--gap) * 1.2);
-    bottom: calc(var(--gap) * 1.2);
-    width: 6px;
+    top: calc(var(--gap) * 1.8);
+    bottom: calc(var(--gap) * 1.8);
+    width: 3px;
     transform: translateX(-50%);
 }
 
@@ -76,17 +76,17 @@ body {
     left: 50%;
     top: 50%;
     width: calc(var(--inner) * 1.30);
-    height: 6px;
+    height: 3px;
     transform-origin: center;
 }
 
-.row-1 { top: calc(var(--gap) + (var(--inner) * (1/6))); }
-.row-2 { top: calc(var(--gap) + (var(--inner) * (3/6))); }
-.row-3 { top: calc(var(--gap) + (var(--inner) * (5/6))); }
+.row-1 { top: calc((var(--gap) * 1) + (var(--cell) * 0.5)); }
+.row-2 { top: calc((var(--gap) * 2) + (var(--cell) * 1.5)); }
+.row-3 { top: calc((var(--gap) * 3) + (var(--cell) * 2.5)); }
 
-.col-1 { left: calc(var(--gap) + (var(--inner) * (1/6))); }
-.col-2 { left: calc(var(--gap) + (var(--inner) * (3/6))); }
-.col-3 { left: calc(var(--gap) + (var(--inner) * (5/6))); }
+.col-1 { left: calc((var(--gap) * 1) + (var(--cell) * 0.5)); }
+.col-2 { left: calc((var(--gap) * 2) + (var(--cell) * 1.5)); }
+.col-3 { left: calc((var(--gap) * 3) + (var(--cell) * 2.5)); }
 
 .top-left { transform: translate(-50%, -50%) rotate(45deg); }
 .top-right { transform: translate(-50%, -50%) rotate(-45deg); }
