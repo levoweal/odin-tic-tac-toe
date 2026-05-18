@@ -46,7 +46,12 @@ body {
     position: relative;
 }
 
-.reset {
+.buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.buttons button {
     width: 100px;
     height: 50px;
 }

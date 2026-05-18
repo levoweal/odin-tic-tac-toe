@@ -25,19 +25,16 @@ function Cell() {
     return { addMark, getValue, valueReset };
 }
 
-function GameController() {
-    //put players as parameters later
-    //to use user input for player names
-
+function GameController(playerOneName, playerTwoName) {
     const board = Gameboard();
 
     const players = [
         {
-            name: 'Player One',
+            getName: playerOneName,
             mark: 'X'
         },
         {
-            name: 'Player Two',
+            getName: playerTwoName,
             mark: 'O'
         }
     ];
@@ -92,7 +89,6 @@ function GameController() {
 }
 
 function ScreenController() {
-    const game = GameController();
     const textDiv = document.querySelector('.text');
     const boardDiv = document.querySelector('.board');
     const resetBtn = document.querySelector('.reset');
@@ -116,6 +112,53 @@ function ScreenController() {
         }
     };
 
+    function InputFactory(id, labelText) {
+        const inputDiv = document.createElement('div');
+
+        const label = document.createElement('label');
+        label.htmlFor = id;
+        label.className = id;
+
+        const span = document.createElement('span');
+        span.textContent = labelText;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = id;
+
+        const getValue = () => input.value;
+
+        label.appendChild(span);
+        label.appendChild(input);
+
+        const button = document.createElement('button');
+        button.className = 'confirm';
+        button.textContent = 'Confirm';
+
+        button.addEventListener('click', () => {
+            const confirmedName = document.createElement('p');
+            confirmedName.textContent = `${labelText}: ${input.value}`;
+            confirmedName.className = 'confirmed-name';
+
+            label.remove();
+            button.remove();
+            inputDiv.appendChild(confirmedName);
+        })
+
+        inputDiv.appendChild(label);
+        inputDiv.appendChild(button);
+
+        return {inputDiv, getValue};
+    }
+
+    const playerOne = InputFactory('player-one', 'Player One');
+    const playerTwo = InputFactory('player-two', 'Player Two');
+
+    boardDiv.appendChild(playerOne.inputDiv);
+    boardDiv.appendChild(playerTwo.inputDiv);
+
+    const game = GameController(playerOne.getValue, playerTwo.getValue);
+
     const updateBoard = () => {
         boardDiv.textContent = '';
         winLine.className = 'win-line';
@@ -127,12 +170,12 @@ function ScreenController() {
         const winningLine = game.winCondition();
 
         if (winningLine) {
-            textDiv.textContent = `${currentPlayer.name} won the game yipee, gg ez`;
+            textDiv.textContent = `${currentPlayer.getName()} won the game yipee, gg ez`;
             drawWinLine(winningLine);
         } else if (game.drawCondition()) {
             textDiv.textContent = `game over, itsa drow, gg both loser`;
         } else {
-            textDiv.textContent = `hello ${currentPlayer.name}, your urn`;
+            textDiv.textContent = `hello ${currentPlayer.getName()}, your urn`;
         }
 
         board.forEach((row, rowIndex) => {
