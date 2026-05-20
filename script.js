@@ -92,6 +92,7 @@ function ScreenController() {
     const textDiv = document.querySelector('.text');
     const boardDiv = document.querySelector('.board');
     const resetBtn = document.querySelector('.reset');
+    const startBtn = document.querySelector('.start');
 
     const winLine = document.createElement('div');
     winLine.className = 'win-line';
@@ -114,6 +115,7 @@ function ScreenController() {
 
     function InputFactory(id, labelText) {
         const inputDiv = document.createElement('div');
+        inputDiv.className = 'input-name';
 
         const label = document.createElement('label');
         label.htmlFor = id;
@@ -125,45 +127,59 @@ function ScreenController() {
         const input = document.createElement('input');
         input.type = 'text';
         input.id = id;
+        input.placeholder = labelText;
 
-        const getValue = () => input.value;
+        let confirmedName = labelText;
 
         label.appendChild(span);
         label.appendChild(input);
 
-        const button = document.createElement('button');
-        button.className = 'confirm';
-        button.textContent = 'Confirm';
+        const confirmButton = document.createElement('button');
+        confirmButton.className = 'confirm';
+        confirmButton.textContent = 'Confirm';
 
-        button.addEventListener('click', () => {
-            const confirmedName = document.createElement('p');
-            confirmedName.textContent = `${labelText}: ${input.value}`;
-            confirmedName.className = 'confirmed-name';
+        confirmButton.addEventListener('click', () => {
+            confirmedName = input.value || labelText;
+
+            const confirmedNameEl = document.createElement('p');
+            confirmedNameEl.textContent = `${labelText}: ${confirmedName}`;
+            confirmedNameEl.className = 'confirmed-name';
 
             label.remove();
-            button.remove();
-            inputDiv.appendChild(confirmedName);
+            confirmButton.remove();
+            inputDiv.appendChild(confirmedNameEl);
         })
 
         inputDiv.appendChild(label);
-        inputDiv.appendChild(button);
+        inputDiv.appendChild(confirmButton);
 
-        return {inputDiv, getValue};
+        const getValue = () => confirmedName;
+
+        const resetInput = () => {
+            const confirmedNameEl = inputDiv.querySelector('.confirmed-name');
+            if (confirmedNameEl) confirmedNameEl.remove();
+            if (!inputDiv.contains(label)) inputDiv.appendChild(label);
+            if (!inputDiv.contains(confirmButton)) inputDiv.appendChild(confirmButton);
+            input.value = '';
+        }
+
+        return {inputDiv, getValue, resetInput};
     }
 
     const playerOne = InputFactory('player-one', 'Player One');
     const playerTwo = InputFactory('player-two', 'Player Two');
 
-    boardDiv.appendChild(playerOne.inputDiv);
-    boardDiv.appendChild(playerTwo.inputDiv);
-
     const game = GameController(playerOne.getValue, playerTwo.getValue);
 
-    const updateBoard = () => {
+    const resetBoard = () => {
         boardDiv.textContent = '';
         winLine.className = 'win-line';
         winLine.style.display = 'none';
         boardDiv.appendChild(winLine);
+    }
+
+    const updateBoard = () => {
+        resetBoard();
 
         const board = game.getBoard();
         const currentPlayer = game.getCurrentPlayer();
@@ -190,7 +206,7 @@ function ScreenController() {
         })
     }
 
-    function clickHandler(e) {
+    function boardHandler(e) {
         const btn = e.target.closest('.cell');
         if (!btn) return;
         if (btn.textContent) return;
@@ -201,14 +217,33 @@ function ScreenController() {
         updateBoard();
     }
 
-    resetBtn.addEventListener('click', () => {
+    function fullResetHandler() {
+        game.gameReset();
+        resetBoard();
+
+        playerOne.resetInput();
+        playerTwo.resetInput();
+        boardDiv.appendChild(playerOne.inputDiv);
+        boardDiv.appendChild(playerTwo.inputDiv);
+
+        resetBtn.textContent = 'Start New Game';
+        startBtn.textContent = 'Reset Player Names';
+    }
+
+    function resetHandler() {
         game.gameReset();
         updateBoard();
-    })
 
-    boardDiv.addEventListener('click', clickHandler);
+        resetBtn.textContent = 'Reset Current Game';
+        startBtn.textContent = 'Start New Game';
+    }
 
-    //updateBoard();
+    resetBtn.addEventListener('click', resetHandler);
+    startBtn.addEventListener('click', fullResetHandler);
+    boardDiv.addEventListener('click', boardHandler);
+
+    boardDiv.appendChild(playerOne.inputDiv);
+    boardDiv.appendChild(playerTwo.inputDiv);
 }
 
 ScreenController();
