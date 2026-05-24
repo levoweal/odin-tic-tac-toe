@@ -186,12 +186,12 @@ function ScreenController() {
         const winningLine = game.winCondition();
 
         if (winningLine) {
-            textDiv.textContent = `${currentPlayer.getName()} won the game yipee, gg ez`;
+            textDiv.textContent = `GAME OVER: ${currentPlayer.getName()} won!`;
             drawWinLine(winningLine);
         } else if (game.drawCondition()) {
-            textDiv.textContent = `game over, itsa drow, gg both loser`;
+            textDiv.textContent = `GAME OVER: it's a draw.`;
         } else {
-            textDiv.textContent = `hello ${currentPlayer.getName()}, your urn`;
+            textDiv.textContent = `${currentPlayer.getName()}, your turn.`;
         }
 
         board.forEach((row, rowIndex) => {
@@ -228,6 +228,7 @@ function ScreenController() {
 
         resetBtn.textContent = 'Start New Game';
         startBtn.textContent = 'Reset Player Names';
+        textDiv.textContent = 'Enter your names'
     }
 
     function resetHandler() {
