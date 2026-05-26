@@ -227,7 +227,9 @@ function ScreenController() {
         boardDiv.appendChild(playerTwo.inputDiv);
 
         resetBtn.textContent = 'Start New Game';
+        resetBtn.classList.replace('btn-light', 'btn-dark');
         startBtn.textContent = 'Reset Player Names';
+        startBtn.classList.replace('btn-dark', 'btn-light');
         textDiv.textContent = 'Enter your names'
     }
 
@@ -236,7 +238,9 @@ function ScreenController() {
         updateBoard();
 
         resetBtn.textContent = 'Reset Current Game';
+        resetBtn.classList.replace('btn-dark', 'btn-light');
         startBtn.textContent = 'Start New Game';
+        startBtn.classList.replace('btn-light', 'btn-dark');
     }
 
     resetBtn.addEventListener('click', resetHandler);

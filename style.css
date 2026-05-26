@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wdth,wght@50..200,200..900&display=swap');
+
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -6,6 +8,7 @@
 
 :root {
     --primary-color: #60a2ce;
+    --dark-primary-color: #0b3a5b;
     --secondary-color: #58d3d3;
     --background-color: #f1f1f1;
     --shadow-color: #c7c7c7;
@@ -35,7 +38,8 @@ body {
 .board {
     width: var(--size);
     height: var(--size);
-    border: solid 2px black;
+    border: solid 2px var(--dark-primary-color);
+    border-radius: 8px;
 
     display: grid;
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
@@ -43,6 +47,43 @@ body {
     padding: var(--gap);
 
     position: relative;
+    overflow: visible;
+
+    background: linear-gradient(180deg, white, var(--background-color));
+}
+
+.cell{
+    background: white;
+    border: none;
+    outline: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(16,24,40,0.04) inset;
+
+    display: inline-grid;
+    place-items: center;
+
+    font-weight: 800;
+    color: var(--primary-color);
+    font-family: 'Inconsolata', 'monospace';
+    font-weight: 700;
+    font-size: calc(var(--cell) * 0.55);
+    font-stretch: 150%;
+    line-height: 1;
+    text-shadow: 0 0 3px var(--shadow-color);
+
+    transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease, color 140ms ease;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cell:hover { 
+    transform: translateY(-3px); 
+    background: rgba(88,211,211,0.06); 
+    box-shadow: 0 10px 24px rgba(16,24,40,0.06); 
+}
+
+.cell:active { 
+    transform: translateY(-2px) scale(0.995); 
 }
 
 .buttons {
@@ -56,34 +97,51 @@ body {
 
 .buttons button {
     flex: 1;
+    color: var(--dark-primary-color);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+    box-shadow: 0 6px 18px var(--shadow-color);
+    transition: transform 140ms ease, background 140ms ease, color 140ms ease;
 }
+
+.buttons button.btn-dark { background: var(--primary-color); color: white; }
+.buttons button.btn-light { background: white; color: var(--dark-primary-color);}
+
+.buttons button:hover { transform: translateY(-2px); }
+.buttons button:active { transform: translateY(-1px) scale(0.995); }
 
 .win-line {
     pointer-events: none;
     z-index: 100;
     background: black;
     position: absolute;
+
+    background: var(--dark-primary-color);
+    border-radius: 4px;
+    box-shadow: 0 6px 18px var(--shadow-color, rgba(0,0,0,0.12));
 }
 
 .win-line--row {
     left: calc(var(--gap) * 1.8);
     right: calc(var(--gap) * 1.8);
-    height: 3px;
+    height: 6px;
     transform: translateY(-50%);
 }
 
 .win-line--col {
     top: calc(var(--gap) * 1.8);
     bottom: calc(var(--gap) * 1.8);
-    width: 3px;
+    width: 6px;
     transform: translateX(-50%);
 }
 
 .win-line--diag {
     left: 50%;
     top: 50%;
-    width: calc(var(--inner) * 1.30);
-    height: 3px;
+    width: calc(var(--inner) * 1.20);
+    height: 6px;
     transform-origin: center;
 }
 
@@ -98,90 +156,16 @@ body {
 .top-left { transform: translate(-50%, -50%) rotate(45deg); }
 .top-right { transform: translate(-50%, -50%) rotate(-45deg); }
 
-
-/* clanker wrote this shit, imma review this tho */
-
-:root{
-    --ui-radius: 12px;
-    --cell-font-scale: 0.65;
-    --glass-shadow: 0 8px 20px rgba(31,41,55,0.08);
-}
-
-/* Board container */
-.board {
-    background: linear-gradient(180deg, rgba(255,255,255,0.92), var(--background-color));
-    border-radius: calc(var(--ui-radius) / 1.5);
-    box-shadow: var(--glass-shadow);
-    padding: var(--gap);
-    position: relative;
-    overflow: visible;
-}
-
-/* Cells */
-.cell{
-    background: #fff;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(16,24,40,0.04) inset;
-    display: inline-grid;
-    place-items: center;
-    font-weight: 800;
-    color: var(--primary-color);
-    font-family: inherit;
-    font-size: calc(var(--cell) * var(--cell-font-scale));
-    line-height: 1;
-    transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease, color 140ms ease;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Hover/active */
-.cell:hover{ transform: translateY(-4px); background: rgba(88,211,211,0.06); box-shadow: 0 10px 24px rgba(16,24,40,0.06); }
-.cell:active{ transform: translateY(-1px) scale(0.995); }
-
-/* Win line uses primary color and shadow color variable */
-.win-line{
-    background: var(--primary-color);
-    height: 4px;
-    border-radius: 4px;
-    box-shadow: 0 6px 18px var(--shadow-color, rgba(0,0,0,0.12));
-    transition: opacity 220ms ease, transform 220ms ease;
-    opacity: 0;
-}
-.win-line[style*="display: none"]{ opacity: 0; }
-.win-line[style=""]{ opacity: 1; }
-
-/* Diagonals keep transform already defined in existing CSS but reinforce visually */
-.win-line--diag.top-left{ transform: translate(-50%, -50%) rotate(45deg); }
-.win-line--diag.top-right{ transform: translate(-50%, -50%) rotate(-45deg); }
-
-/* Top text */
 .text{
     font-size: 18px;
-    color: #374151;
-    background: rgba(255,255,255,0.6);
+    color: var(--dark-primary-color);
+    background: white;
     padding: 8px 14px;
     border-radius: 999px;
-    box-shadow: 0 6px 18px rgba(31,41,55,0.04);
-    border: 1px solid rgba(31,41,55,0.04);
+    box-shadow: 0 6px 18px var(--shadow-color);
     min-width: 240px;
     text-align: center;
 }
-
-/* Buttons */
-.buttons{ gap: 12px; }
-.buttons button{
-    background: #fff;
-    color: #0b3a5b;
-    border: 1px solid rgba(0,0,0,0.06);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-weight: 600;
-    box-shadow: 0 6px 18px rgba(31,41,55,0.04);
-    transition: transform 140ms ease, background 140ms ease, color 140ms ease;
-}
-.buttons button.start{ background: var(--primary-color); color: #fff; border: none; }
-.buttons button.reset{ background: #fff; }
 
 .board .input-name {
     --input-gap: 10px;
@@ -214,19 +198,19 @@ body {
 }
 
 .board .input-name:nth-of-type(2) {
-  grid-row: 1 / 2;
-  grid-column: 1 / 4;
-  align-self: start;
-  justify-self: center;
-  transform: translateY(5%);
+    grid-row: 1 / 2;
+      grid-column: 1 / 4;
+    align-self: start;
+    justify-self: center;
+    transform: translateY(5%);
 }
 
 .board .input-name:nth-of-type(3) {
-  grid-row: 3 / 4;
-  grid-column: 1 / 4;
-  align-self: end;
-  justify-self: center;
-  transform: translateY(-5%);
+    grid-row: 3 / 4;
+    grid-column: 1 / 4;
+    align-self: end;
+    justify-self: center;
+    transform: translateY(-5%);
 }
 
 .input-name label {
@@ -252,7 +236,7 @@ body {
 .input-name span {
     font-weight: 600;
     color: var(--primary-color);
-    font-size: 13px;
+    font-size: 16px;
     width: 100%;
     text-align: center;
 }
@@ -271,15 +255,17 @@ body {
 
 .input-name .confirm {
     grid-row: 3;
-    width: 60%;
-    height: 100%;
+    place-self: center;
+    width: 55%;
+    height: 88%;
     background: var(--secondary-color);
     color: white;
     border: none;
     padding: 0 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-weight: 700;
+    font-size: 14px;
 }
 
 .input-name .confirmed-name {
@@ -292,22 +278,7 @@ body {
     justify-content: center;
     text-align: center;
     font-weight: 700;
+    color: var(--dark-primary-color);
     box-sizing: border-box;
     padding: 0 8px;
 }
-
-/* Responsive
-@media (max-width:420px){
-    :root{ --size:320px; }
-    .board{ --cell-font-scale: 0.6; }
-    .text{ font-size:15px; padding:6px 10px; }
-    .board .input-name:nth-of-type(1){ top:8px; }
-    .board .input-name:nth-of-type(2){ top:56px; }
-}
-
-/* Accessibility focus
-.cell:focus, .input-name input:focus, .confirm:focus, .buttons button:focus{
-    outline: 3px solid rgba(88,211,211,0.18);
-    outline-offset: 2px;
-}
-*/
