@@ -52,7 +52,7 @@ body {
     background: linear-gradient(180deg, white, var(--background-color));
 }
 
-.cell{
+.cell {
     background: white;
     border: none;
     outline: 1px solid rgba(0,0,0,0.06);
@@ -63,7 +63,6 @@ body {
     place-items: center;
 
     font-weight: 800;
-    color: var(--primary-color);
     font-family: 'Inconsolata', 'monospace';
     font-weight: 700;
     font-size: calc(var(--cell) * 0.55);
@@ -75,6 +74,9 @@ body {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 }
+
+.cell--x { color: var(--primary-color); }
+.cell--o { color: var(--secondary-color); }
 
 .cell:hover { 
     transform: translateY(-3px); 

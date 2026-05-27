@@ -188,19 +188,25 @@ function ScreenController() {
         if (winningLine) {
             textDiv.textContent = `GAME OVER: ${currentPlayer.getName()} won!`;
             drawWinLine(winningLine);
+            resetBtn.textContent = 'Start New Round';
         } else if (game.drawCondition()) {
             textDiv.textContent = `GAME OVER: it's a draw.`;
+            resetBtn.textContent = 'Start New Round';
         } else {
             textDiv.textContent = `${currentPlayer.getName()}, your turn.`;
+            resetBtn.textContent = 'Reset Current Game';
         }
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
                 const cellBtn = document.createElement('button');
+                const mark = cell.getValue();
                 cellBtn.className = 'cell';
                 cellBtn.dataset.row = rowIndex;
                 cellBtn.dataset.col = colIndex;
-                cellBtn.textContent = cell.getValue();
+                cellBtn.textContent = mark;
+                if (mark === 'X') { cellBtn.classList.add('cell--x')}
+                else if (mark === 'O') {cellBtn.classList.add('cell--o')};
                 boardDiv.appendChild(cellBtn);
             })
         })
@@ -228,8 +234,10 @@ function ScreenController() {
 
         resetBtn.textContent = 'Start New Game';
         resetBtn.classList.replace('btn-light', 'btn-dark');
+
         startBtn.textContent = 'Reset Player Names';
         startBtn.classList.replace('btn-dark', 'btn-light');
+
         textDiv.textContent = 'Enter your names'
     }
 
